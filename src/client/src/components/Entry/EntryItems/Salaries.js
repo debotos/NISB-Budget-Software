@@ -8,11 +8,13 @@ import {
 	Table,
 	Popconfirm,
 	Spin,
-	message
+	message,
+	Icon
 } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
 import numeral from 'numeral'
+import Highlighter from 'react-highlight-words'
 
 const { MonthPicker } = DatePicker
 
@@ -31,7 +33,7 @@ export class Salaries extends Component {
 		try {
 			this.setState({ loading: true })
 			const response = await axios.get('/api/v1/salaries')
-			const data = response.data.map(x => ({ ...x, key: x._id }))
+			const data = response.data.map(x => ({ ...x, key: x._id })).reverse()
 			this.setState({ data }, () => this.setState({ loading: false }))
 		} catch (error) {
 			console.log(error)
@@ -40,6 +42,31 @@ export class Salaries extends Component {
 	}
 
 	state = { working: false, loading: true, data: [] }
+
+	updateData = (id, data) => {
+		const update = this.state.data.map(x => {
+			if (x.key === id) {
+				return { ...x, ...data }
+			} else {
+				return x
+			}
+		})
+		this.setState({ data: update })
+	}
+
+	addData = data => {
+		const current = this.state.data
+		current.unshift({ ...data, key: data._id })
+		this.setState({ data: current })
+	}
+	deleteData = id => {
+		const update = this.state.data.filter(x => {
+			if (x.key !== id) {
+				return x
+			}
+		})
+		this.setState({ data: update })
+	}
 
 	handleSubmit = e => {
 		e.preventDefault()
@@ -61,12 +88,14 @@ export class Salaries extends Component {
 					.then(response => {
 						const data = response.data
 						console.log('Salaries form submit response: ', data)
+						/* Instant UI update */
+						this.addData(data)
+						this.setState({ working: false })
+						message.success('Added Successfully!')
 						// Clear the form
 						this.props.form.resetFields()
 						// To disabled submit button
 						this.props.form.validateFields()
-						this.setState({ working: false })
-						message.success('Added Successfully!')
 					})
 					.catch(error => {
 						console.log(error.message)
@@ -149,7 +178,15 @@ export class Salaries extends Component {
 					</Form.Item>
 				</Form>
 				<br />
-				{!loading ? <EditableFormTable data={data} /> : <Spin size="large" />}
+				{!loading ? (
+					<EditableFormTable
+						data={data}
+						updateData={this.updateData}
+						deleteData={this.deleteData}
+					/>
+				) : (
+					<Spin size="large" />
+				)}
 			</>
 		)
 	}
@@ -192,7 +229,7 @@ class EditableCell extends React.Component {
 			case 'date':
 				return moment(record[field])
 			case 'month':
-				return moment()
+				return moment(record[field])
 			default:
 				return record[field]
 		}
@@ -248,37 +285,44 @@ class EditableTable extends React.Component {
 				title: 'Voucher',
 				dataIndex: 'voucher',
 				width: '10%',
-				editable: true
+				editable: true,
+				...this.getColumnSearchProps('voucher')
 			},
 			{
 				title: 'Date',
 				dataIndex: 'date',
 				width: '20%',
-				editable: true
+				editable: true,
+				sorter: (a, b) => a.date - b.date
 			},
 			{
 				title: 'Month',
 				dataIndex: 'month',
 				width: '20%',
-				editable: true
+				editable: true,
+				...this.getColumnSearchProps('month')
 			},
 			{
 				title: 'Name',
 				dataIndex: 'name',
 				width: '15%',
-				editable: true
+				editable: true,
+				...this.getColumnSearchProps('name')
 			},
 			{
 				title: 'Designation',
 				dataIndex: 'designation',
 				width: '15%',
-				editable: true
+				editable: true,
+				...this.getColumnSearchProps('designation')
 			},
 			{
 				title: 'Amount',
 				dataIndex: 'amount',
 				width: '10%',
-				editable: true
+				editable: true,
+				// defaultSortOrder: 'descend',
+				sorter: (a, b) => a.amount - b.amount
 			},
 			{
 				title: 'operation',
@@ -304,9 +348,20 @@ class EditableTable extends React.Component {
 							</Popconfirm>
 						</span>
 					) : (
-						<a disabled={editingKey !== ''} onClick={() => this.edit(record.key)}>
-							Edit
-						</a>
+						<span>
+							<a disabled={editingKey !== ''} onClick={() => this.edit(record.key)}>
+								Edit
+							</a>
+							<Popconfirm
+								title="Sure to delete?"
+								icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+								onConfirm={() => this.delete(record.key)}
+							>
+								<a href="javascript:;" style={{ marginLeft: 8, color: '#e26a6a' }}>
+									Delete
+								</a>
+							</Popconfirm>
+						</span>
 					)
 				}
 			}
@@ -317,6 +372,21 @@ class EditableTable extends React.Component {
 
 	cancel = () => {
 		this.setState({ editingKey: '' })
+	}
+
+	delete(key) {
+		/* Instant UI update */
+		this.props.deleteData(key)
+		axios
+			.delete(`/api/v1/salaries/${key}`)
+			.then(response => {
+				console.log('Salary delete response ', response.data)
+				message.success('Successfully Deleted!')
+			})
+			.catch(error => {
+				console.log(error.message)
+				message.error('Failed to delete!')
+			})
 	}
 
 	save(form, key) {
@@ -332,6 +402,8 @@ class EditableTable extends React.Component {
 					amount: row.amount
 				}
 				console.log('Salaries updated form data formated: ', data)
+				/* Instant UI update */
+				this.props.updateData(key, data)
 				axios
 					.post(`/api/v1/salaries/${key}`, data)
 					.then(response => {
@@ -353,6 +425,70 @@ class EditableTable extends React.Component {
 	edit(key) {
 		this.setState({ editingKey: key })
 	}
+
+	state = {
+		searchText: ''
+	}
+
+	handleSearch = (selectedKeys, confirm) => {
+		confirm()
+		this.setState({ searchText: selectedKeys[0] })
+	}
+
+	handleReset = clearFilters => {
+		clearFilters()
+		this.setState({ searchText: '' })
+	}
+
+	getColumnSearchProps = dataIndex => ({
+		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+			<div style={{ padding: 8 }}>
+				<Input
+					ref={node => {
+						this.searchInput = node
+					}}
+					placeholder={`Search ${dataIndex}`}
+					value={selectedKeys[0]}
+					onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+					onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+					style={{ width: 188, marginBottom: 8, display: 'block' }}
+				/>
+				<Button
+					type="primary"
+					onClick={() => this.handleSearch(selectedKeys, confirm)}
+					icon="search"
+					size="small"
+					style={{ width: 90, marginRight: 8 }}
+				>
+					Search
+				</Button>
+				<Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+					Reset
+				</Button>
+			</div>
+		),
+		filterIcon: filtered => (
+			<Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+		),
+		onFilter: (value, record) =>
+			record[dataIndex]
+				.toString()
+				.toLowerCase()
+				.includes(value.toLowerCase()),
+		onFilterDropdownVisibleChange: visible => {
+			if (visible) {
+				setTimeout(() => this.searchInput.select())
+			}
+		},
+		render: text => (
+			<Highlighter
+				highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+				searchWords={[this.state.searchText]}
+				autoEscape
+				textToHighlight={text.toString()}
+			/>
+		)
+	})
 
 	render() {
 		const components = {

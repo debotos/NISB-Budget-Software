@@ -17,13 +17,13 @@ const { Content, Sider } = Layout
 export class Entry extends Component {
 	render() {
 		const { match } = this.props
-
+		const pathArray = window.location.pathname.split('/')
+		const option = pathArray[pathArray.length - 1]
 		return (
 			<>
 				<Breadcrumb style={{ margin: '16px 0' }}>
-					<Breadcrumb.Item>Home</Breadcrumb.Item>
-					<Breadcrumb.Item>List</Breadcrumb.Item>
-					<Breadcrumb.Item>App</Breadcrumb.Item>
+					<Breadcrumb.Item>Entry</Breadcrumb.Item>
+					<Breadcrumb.Item style={{ textTransform: 'capitalize' }}>{option}</Breadcrumb.Item>
 				</Breadcrumb>
 				<Layout style={{ padding: '24px 0', background: '#fff' }}>
 					<Sider width={200} style={{ background: '#fff' }}>
