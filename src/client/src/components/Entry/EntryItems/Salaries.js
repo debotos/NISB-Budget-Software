@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, DatePicker, InputNumber, Table, Popconfirm } from 'antd'
+import {
+	Form,
+	Input,
+	Button,
+	DatePicker,
+	InputNumber,
+	Table,
+	Popconfirm,
+	Spin,
+	message
+} from 'antd'
 import axios from 'axios'
+import moment from 'moment'
+import numeral from 'numeral'
 
 const { MonthPicker } = DatePicker
 
@@ -10,17 +22,30 @@ function hasErrors(fieldsError) {
 
 export class Salaries extends Component {
 	componentDidMount() {
+		this.getSalaries()
 		// To disabled submit button at the beginning.
 		this.props.form.validateFields()
 	}
 
-	state = { loading: false }
+	getSalaries = async () => {
+		try {
+			this.setState({ loading: true })
+			const response = await axios.get('/api/v1/salaries')
+			const data = response.data.map(x => ({ ...x, key: x._id }))
+			this.setState({ data }, () => this.setState({ loading: false }))
+		} catch (error) {
+			console.log(error)
+			message.error('Failed to load the salaries data!')
+		}
+	}
+
+	state = { working: false, loading: true, data: [] }
 
 	handleSubmit = e => {
 		e.preventDefault()
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				this.setState({ loading: true })
+				this.setState({ working: true })
 				console.log('Received values of Salaries form: ', values)
 				const data = {
 					voucher: values.voucher,
@@ -40,11 +65,13 @@ export class Salaries extends Component {
 						this.props.form.resetFields()
 						// To disabled submit button
 						this.props.form.validateFields()
-						this.setState({ loading: false })
+						this.setState({ working: false })
+						message.success('Added Successfully!')
 					})
 					.catch(error => {
 						console.log(error.message)
-						this.setState({ loading: false })
+						message.error('Failed to add!')
+						this.setState({ working: false })
 					})
 			}
 		})
@@ -55,7 +82,7 @@ export class Salaries extends Component {
 	}
 
 	render() {
-		const { loading } = this.state
+		const { working, loading, data } = this.state
 		const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form
 		// Only show error after a field is touched.
 		const voucherError = isFieldTouched('voucher') && getFieldError('voucher')
@@ -112,7 +139,7 @@ export class Salaries extends Component {
 
 					<Form.Item>
 						<Button
-							loading={loading}
+							loading={working}
 							type="primary"
 							htmlType="submit"
 							disabled={hasErrors(getFieldsError())}
@@ -121,7 +148,8 @@ export class Salaries extends Component {
 						</Button>
 					</Form.Item>
 				</Form>
-				<EditableFormTable />
+				<br />
+				{!loading ? <EditableFormTable data={data} /> : <Spin size="large" />}
 			</>
 		)
 	}
@@ -137,36 +165,54 @@ export default SalariesForm
 	*******************************
 */
 
-const data = []
-for (let i = 0; i < 100; i++) {
-	data.push({
-		key: i.toString(),
-		name: `Edrward ${i}`,
-		age: 32,
-		address: `London Park no. ${i}`
-	})
-}
 const EditableContext = React.createContext()
 
 class EditableCell extends React.Component {
-	getInput = () => {
-		if (this.props.inputType === 'number') {
-			return <InputNumber />
+	getInput = field => {
+		switch (field) {
+			case 'amount':
+				return (
+					<InputNumber
+						formatter={value => `৳ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+						parser={value => value.replace(/৳\s?|(,*)/g, '')}
+						min={1}
+					/>
+				)
+			case 'date':
+				return <DatePicker placeholder="Select Date" />
+			case 'month':
+				return <MonthPicker placeholder="Select month" />
+			default:
+				return <Input />
 		}
-		return <Input />
+	}
+
+	getInputValue = (record, field) => {
+		switch (field) {
+			case 'date':
+				return moment(record[field])
+			case 'month':
+				return moment()
+			default:
+				return record[field]
+		}
+	}
+
+	renderDataView = (children, record, field) => {
+		switch (field) {
+			case 'date':
+				return `${moment(record[field]).format('ddd, MMM Do YY')} (${moment(record[field]).format(
+					'DD-MM-YYYY'
+				)})`
+			case 'amount':
+				return `${numeral(record[field]).format('0,0.00')} ৳`
+			default:
+				return children
+		}
 	}
 
 	renderCell = ({ getFieldDecorator }) => {
-		const {
-			editing,
-			dataIndex,
-			title,
-			inputType,
-			record,
-			index,
-			children,
-			...restProps
-		} = this.props
+		const { editing, dataIndex, title, record, index, children, ...restProps } = this.props
 		return (
 			<td {...restProps}>
 				{editing ? (
@@ -178,11 +224,11 @@ class EditableCell extends React.Component {
 									message: `Please Input ${title}!`
 								}
 							],
-							initialValue: record[dataIndex]
-						})(this.getInput())}
+							initialValue: this.getInputValue(record, dataIndex)
+						})(this.getInput(dataIndex))}
 					</Form.Item>
 				) : (
-					children
+					this.renderDataView(children, record, dataIndex)
 				)}
 			</td>
 		)
@@ -196,7 +242,7 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = { data, editingKey: '' }
+		this.state = { editingKey: '' }
 		this.columns = [
 			{
 				title: 'Voucher',
@@ -219,13 +265,19 @@ class EditableTable extends React.Component {
 			{
 				title: 'Name',
 				dataIndex: 'name',
-				width: '20%',
+				width: '15%',
 				editable: true
 			},
 			{
 				title: 'Designation',
 				dataIndex: 'designation',
-				width: '20%',
+				width: '15%',
+				editable: true
+			},
+			{
+				title: 'Amount',
+				dataIndex: 'amount',
+				width: '10%',
 				editable: true
 			},
 			{
@@ -268,22 +320,32 @@ class EditableTable extends React.Component {
 	}
 
 	save(form, key) {
-		form.validateFields((error, row) => {
-			if (error) {
-				return
-			}
-			const newData = [...this.state.data]
-			const index = newData.findIndex(item => key === item.key)
-			if (index > -1) {
-				const item = newData[index]
-				newData.splice(index, 1, {
-					...item,
-					...row
-				})
-				this.setState({ data: newData, editingKey: '' })
-			} else {
-				newData.push(row)
-				this.setState({ data: newData, editingKey: '' })
+		form.validateFields((err, row) => {
+			if (!err) {
+				console.log('Received values of Salaries Update form: ', row)
+				const data = {
+					voucher: row.voucher,
+					month: row.month.format('MMMM YYYY'),
+					date: row.date.valueOf(),
+					name: row.name,
+					designation: row.designation,
+					amount: row.amount
+				}
+				console.log('Salaries updated form data formated: ', data)
+				axios
+					.post(`/api/v1/salaries/${key}`, data)
+					.then(response => {
+						const data = response.data
+						console.log('Salaries form update response: ', data)
+						// To disabled submit button
+						this.props.form.validateFields()
+						this.cancel(key)
+						message.success('Successfully Updated!')
+					})
+					.catch(error => {
+						console.log(error.message)
+						message.error('Failed to update!')
+					})
 			}
 		})
 	}
@@ -307,7 +369,6 @@ class EditableTable extends React.Component {
 				...col,
 				onCell: record => ({
 					record,
-					inputType: col.dataIndex === 'age' ? 'number' : 'text',
 					dataIndex: col.dataIndex,
 					title: col.title,
 					editing: this.isEditing(record)
@@ -321,7 +382,7 @@ class EditableTable extends React.Component {
 					size="small"
 					components={components}
 					bordered
-					dataSource={this.state.data}
+					dataSource={this.props.data}
 					columns={columns}
 					rowClassName="editable-row"
 					pagination={{
