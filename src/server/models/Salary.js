@@ -2,29 +2,44 @@ const mongoose = require('mongoose')
 
 const Schema = new mongoose.Schema(
 	{
-		name: {
+		voucher: {
 			type: String,
 			required: true,
-			minlength: 3,
+			minlength: 2,
 			maxlength: 100,
 			trim: true
 		},
-		email: {
-			type: String,
+		date: {
+			type: Number, // store timestamp
 			required: true,
-			minlength: 3,
+			index: true,
 			trim: true
 		},
-		message: {
+		month: {
 			type: String,
 			required: true,
-			minlength: 3,
+			minlength: 1,
+			maxlength: 20,
 			trim: true
 		},
-		haveAccount: {
-			type: Boolean,
-			default: false,
-			required: true
+		name: {
+			type: String,
+			required: true,
+			minlength: 2,
+			maxlength: 100,
+			trim: true
+		},
+		designation: {
+			type: String,
+			required: true,
+			minlength: 2,
+			maxlength: 100,
+			trim: true
+		},
+		amount: {
+			type: Number,
+			required: true,
+			trim: true
 		}
 	},
 	{
