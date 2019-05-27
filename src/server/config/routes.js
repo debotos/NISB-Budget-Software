@@ -3,6 +3,7 @@ const fringes = require('../routes/fringes')
 const consultant = require('../routes/consultant')
 const supplies = require('../routes/supplies')
 const travels = require('../routes/travels')
+const others = require('../routes/others')
 const error = require('../middleware/error')
 
 const version = process.env.API_VERSION || 'v1'
@@ -13,5 +14,6 @@ module.exports = function(app) {
 	app.use(`/api/${version}/consultant`, consultant)
 	app.use(`/api/${version}/supplies`, supplies)
 	app.use(`/api/${version}/travels`, travels)
+	app.use(`/api/${version}/others`, others)
 	app.use(error)
 }

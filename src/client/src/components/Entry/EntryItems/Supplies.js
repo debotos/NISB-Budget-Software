@@ -10,8 +10,7 @@ import {
 	Popconfirm,
 	Spin,
 	message,
-	Icon,
-	Divider
+	Icon
 } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
@@ -139,11 +138,7 @@ export class Supplies extends Component {
 		this.setState({ data: current })
 	}
 	deleteData = id => {
-		const update = this.state.data.filter(x => {
-			if (x.key !== id) {
-				return x
-			}
-		})
+		const update = this.state.data.filter(x => x.key !== id)
 		this.setState({ data: update })
 	}
 
@@ -185,7 +180,7 @@ export class Supplies extends Component {
 						})(
 							<Select
 								mode="tags"
-								style={{ minWidth: 200 }}
+								style={{ minWidth: 350 }}
 								placeholder="Supplies Type"
 								showSearch
 								optionFilterProp="children"

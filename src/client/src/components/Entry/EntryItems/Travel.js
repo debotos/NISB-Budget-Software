@@ -58,11 +58,7 @@ export class Travels extends Component {
 		this.setState({ data: current })
 	}
 	deleteData = id => {
-		const update = this.state.data.filter(x => {
-			if (x.key !== id) {
-				return x
-			}
-		})
+		const update = this.state.data.filter(x => x.key !== id)
 		this.setState({ data: update })
 	}
 
