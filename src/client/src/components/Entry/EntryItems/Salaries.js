@@ -522,7 +522,8 @@ class EditableTable extends React.Component {
 					columns={columns}
 					rowClassName="editable-row"
 					pagination={{
-						onChange: this.cancel
+						onChange: this.cancel,
+						pageSize: 15
 					}}
 				/>
 			</EditableContext.Provider>
