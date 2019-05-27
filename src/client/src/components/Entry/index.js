@@ -65,7 +65,11 @@ export class Entry extends Component {
 
 export default Entry
 
-const Intro = () => <h1>Please select an option!</h1>
+const Intro = () => (
+	<p style={{ fontSize: '50px', opacity: 0.5, textAlign: 'center' }}>
+		Please select one of Entry Options!
+	</p>
+)
 
 const MenuItems = [
 	{

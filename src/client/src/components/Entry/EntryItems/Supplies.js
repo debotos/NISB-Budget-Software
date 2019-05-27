@@ -383,7 +383,7 @@ class EditableTable extends React.Component {
 				sorter: (a, b) => a.date - b.date
 			},
 			{
-				title: 'Amount',
+				title: 'Total Cost',
 				dataIndex: 'amount',
 				width: '20%',
 				editable: true,

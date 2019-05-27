@@ -12,7 +12,9 @@ const App = () => (
 	<Router>
 		<Layout style={{ minHeight: '100vh' }}>
 			<Header className="header">
-				<div className="logo" />
+				<div className="logo">
+					<h1 style={{ color: '#fff', margin: 0 }}>Accounting</h1>
+				</div>
 				<Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
 					<Menu.Item key="1">
 						Summary
@@ -36,7 +38,9 @@ const App = () => (
 					<Redirect to="/" />
 				</Switch>
 			</Content>
-			<Footer style={{ textAlign: 'center' }}>©2019 Created by Touhidur Rahman</Footer>
+			<Footer style={{ textAlign: 'center' }}>
+				©{new Date().getFullYear()} Created by Touhidur Rahman
+			</Footer>
 		</Layout>
 	</Router>
 )

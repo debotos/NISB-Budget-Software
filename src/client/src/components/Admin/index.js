@@ -8,7 +8,7 @@ export class Admin extends Component {
 	render() {
 		return (
 			<>
-				<Breadcrumb style={{ margin: '16px 0' }}>
+				{/* <Breadcrumb style={{ margin: '16px 0' }}>
 					<Breadcrumb.Item>Home</Breadcrumb.Item>
 					<Breadcrumb.Item>List</Breadcrumb.Item>
 					<Breadcrumb.Item>App</Breadcrumb.Item>
@@ -38,7 +38,7 @@ export class Admin extends Component {
 						</Menu>
 					</Sider>
 					<Content style={{ padding: '0 24px', minHeight: 280 }}>Content</Content>
-				</Layout>
+				</Layout> */}
 			</>
 		)
 	}
