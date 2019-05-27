@@ -106,10 +106,7 @@ export class Fringes extends Component {
 		})
 	}
 
-	onDateChange = (date, dateString) => {
-		console.log(date, dateString)
-	}
-
+	
 	render() {
 		const { working, loading, data } = this.state
 		const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form
