@@ -56,6 +56,22 @@ export class Admin extends Component {
 			if (!err) {
 				this.setState({ working: true })
 				console.log('Received values of Admin form: ', values)
+				axios
+					.post('/api/v1/budget', values)
+					.then(response => {
+						const data = response.data
+						console.log('Budget form submit response: ', data)
+						/* Instant UI update */
+
+						this.setState({ working: false })
+						message.success('Budget Updated Successfully!')
+						this.props.form.validateFields()
+					})
+					.catch(error => {
+						console.log(error.message)
+						message.error('Failed to Updated Budget!')
+						this.setState({ working: false })
+					})
 			}
 		})
 	}
@@ -71,6 +87,7 @@ export class Admin extends Component {
 		const travelError = isFieldTouched('travel') && getFieldError('travel')
 
 		if (loading) return <Spin size="large" />
+		const { consultant, fringe, other, salary, supply, travel } = data
 		return (
 			<>
 				<Layout style={{ padding: '24px 0', margin: '50px 0', background: '#fff' }}>
@@ -83,6 +100,7 @@ export class Admin extends Component {
 								{...formItemLayout}
 							>
 								{getFieldDecorator('salary', {
+									initialValue: salary,
 									rules: [{ required: true, message: 'Provide Salaries And Wages Budget!' }]
 								})(
 									<InputNumber
@@ -100,6 +118,7 @@ export class Admin extends Component {
 								{...formItemLayout}
 							>
 								{getFieldDecorator('fringe', {
+									initialValue: fringe,
 									rules: [{ required: true, message: 'Provide Fringe Budget!' }]
 								})(
 									<InputNumber
@@ -117,6 +136,7 @@ export class Admin extends Component {
 								{...formItemLayout}
 							>
 								{getFieldDecorator('consultant', {
+									initialValue: consultant,
 									rules: [{ required: true, message: 'Provide Consultant Budget!' }]
 								})(
 									<InputNumber
@@ -134,6 +154,7 @@ export class Admin extends Component {
 								{...formItemLayout}
 							>
 								{getFieldDecorator('supply', {
+									initialValue: supply,
 									rules: [{ required: true, message: 'Provide Supplies Budget!' }]
 								})(
 									<InputNumber
@@ -151,6 +172,7 @@ export class Admin extends Component {
 								{...formItemLayout}
 							>
 								{getFieldDecorator('travel', {
+									initialValue: travel,
 									rules: [{ required: true, message: 'Provide Travel Budget!' }]
 								})(
 									<InputNumber
@@ -168,6 +190,7 @@ export class Admin extends Component {
 								{...formItemLayout}
 							>
 								{getFieldDecorator('other', {
+									initialValue: other,
 									rules: [{ required: true, message: 'Provide Others Budget!' }]
 								})(
 									<InputNumber
