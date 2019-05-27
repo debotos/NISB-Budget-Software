@@ -1,20 +1,6 @@
 import React, { Component } from 'react'
-import {
-	Form,
-	Input,
-	Button,
-	DatePicker,
-	Layout,
-	InputNumber,
-	Table,
-	Popconfirm,
-	Spin,
-	message,
-	Icon
-} from 'antd'
+import { Form, Button, Layout, InputNumber, Spin, message } from 'antd'
 import axios from 'axios'
-import moment from 'moment'
-import numeral from 'numeral'
 
 const { Content } = Layout
 const formItemLayout = {

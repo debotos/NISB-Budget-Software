@@ -395,7 +395,9 @@ class EditableTable extends React.Component {
 						<span>
 							<EditableContext.Consumer>
 								{form => (
+									// eslint-disable-next-line
 									<a
+										// eslint-disable-next-line
 										href="javascript:;"
 										onClick={() => this.save(form, record.key)}
 										style={{ marginRight: 8 }}
@@ -405,11 +407,13 @@ class EditableTable extends React.Component {
 								)}
 							</EditableContext.Consumer>
 							<Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.key)}>
+								{/* eslint-disable-next-line */}
 								<a>Cancel</a>
 							</Popconfirm>
 						</span>
 					) : (
 						<span>
+							{/* eslint-disable-next-line */}
 							<a disabled={editingKey !== ''} onClick={() => this.edit(record.key)}>
 								Edit
 							</a>
@@ -418,6 +422,7 @@ class EditableTable extends React.Component {
 								icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
 								onConfirm={() => this.delete(record.key)}
 							>
+								{/* eslint-disable-next-line */}
 								<a href="javascript:;" style={{ marginLeft: 8, color: '#e26a6a' }}>
 									Delete
 								</a>
