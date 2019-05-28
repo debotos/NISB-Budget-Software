@@ -50,13 +50,6 @@ export class Salaries extends Component {
 		}
 	}
 
-	handlePanelChange = (value, mode) => {
-		this.setState({
-			value,
-			mode: [mode[0] === 'date' ? 'month' : mode[0], mode[1] === 'date' ? 'month' : mode[1]]
-		})
-	}
-
 	handleChange = value => {
 		this.setState({ value })
 	}
@@ -71,12 +64,11 @@ export class Salaries extends Component {
 		budget: 0,
 		showDetails: false,
 		/* Range Selector */
-		mode: ['month', 'month'],
 		value: []
 	}
 
 	render() {
-		const { loading, budget, showDetails, value, mode } = this.state
+		const { loading, budget, showDetails, value } = this.state
 		let { data } = this.state
 		let totalMoney = 0
 		data.forEach(x => (totalMoney = totalMoney + x.amount))
@@ -85,7 +77,7 @@ export class Salaries extends Component {
 		if (value.length === 2) {
 			startDate = value[0].valueOf()
 			endDate = value[1].valueOf()
-			data = data.filter(x => x.date >= startDate && x.data <= endDate)
+			data = data.filter(x => x.date >= startDate && x.date <= endDate)
 		}
 
 		if (loading) return <Spin size="large" />
@@ -106,11 +98,12 @@ export class Salaries extends Component {
 							<>
 								<RangePicker
 									placeholder={['Start month', 'End month']}
-									format="YYYY-MM"
+									format="DD-MM-YYYY"
+									ranges={{
+										'This Month': [moment().startOf('month'), moment().endOf('month')]
+									}}
 									value={value}
-									mode={mode}
 									onChange={this.handleChange}
-									onPanelChange={this.handlePanelChange}
 									style={{ marginRight: '15px' }}
 								/>
 								<strong>View Details</strong>
