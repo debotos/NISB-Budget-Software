@@ -32,10 +32,10 @@ const App = () => (
 			</Header>
 			<Content style={{ padding: '0 50px' }}>
 				<Switch>
-					<Route exact path="/" component={Summary} />
+					<Route path="/summary" component={Summary} />
 					<Route path="/entry" component={Entry} />
 					<Route path="/admin" component={Admin} />
-					<Redirect to="/" />
+					<Redirect to="/summary" />
 				</Switch>
 			</Content>
 			<Footer style={{ textAlign: 'center' }}>
