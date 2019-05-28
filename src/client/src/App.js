@@ -13,7 +13,7 @@ const App = () => (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Header className="header">
 				<div className="logo">
-					<h1 style={{ color: '#fff', margin: 0 }}>Accounting</h1>
+					<h1 style={{ color: '#fff', margin: 0 }}>NISB</h1>
 				</div>
 				<Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
 					<Menu.Item key="1">

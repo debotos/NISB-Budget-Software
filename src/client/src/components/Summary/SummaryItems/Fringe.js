@@ -117,9 +117,9 @@ export class Fringes extends Component {
 						</div>
 					</Card>
 
-					<Card style={{ marginTop: 16 }} type="inner" title="Balanch">
+					<Card style={{ marginTop: 16 }} type="inner" title="Balance">
 						<div style={{ display: 'flex' }}>
-							<Text code>Balanch:</Text>
+							<Text code>Balance:</Text>
 							<Paragraph mark strong copyable>{`${numeral(budget - totalMoney).format(
 								'0,0.00'
 							)} ৳`}</Paragraph>
