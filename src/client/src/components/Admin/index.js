@@ -4,12 +4,12 @@ import axios from 'axios'
 
 const { Content } = Layout
 const formItemLayout = {
-	labelCol: { span: 4 },
+	labelCol: { span: 6 },
 	wrapperCol: { span: 8 }
 }
 const formTailLayout = {
-	labelCol: { span: 4 },
-	wrapperCol: { span: 8, offset: 4 }
+	labelCol: { span: 6 },
+	wrapperCol: { span: 8, offset: 6 }
 }
 function hasErrors(fieldsError) {
 	return Object.keys(fieldsError).some(field => fieldsError[field])

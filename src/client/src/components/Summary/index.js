@@ -16,9 +16,10 @@ const { Content, Sider } = Layout
 
 export class Summary extends Component {
 	render() {
-		const { match } = this.props
+		const { match, budgetYear } = this.props
 		const pathArray = window.location.pathname.split('/')
 		const option = pathArray[pathArray.length - 1]
+		console.log(budgetYear)
 		return (
 			<>
 				<Breadcrumb style={{ margin: '16px 0' }}>

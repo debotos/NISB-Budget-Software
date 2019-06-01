@@ -9,6 +9,7 @@ const Schema = new mongoose.Schema(
 			maxlength: 100,
 			trim: true
 		},
+
 		date: {
 			type: Number, // store timestamp
 			required: true,
@@ -43,6 +44,14 @@ const Schema = new mongoose.Schema(
 			type: Number,
 			required: true,
 			trim: true
+		},
+		budgetYear: {
+			type: String,
+			required: true,
+			minlength: 11,
+			maxlength: 11,
+			trim: true,
+			index: true
 		}
 	},
 	{
