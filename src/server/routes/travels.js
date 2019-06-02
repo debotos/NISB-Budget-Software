@@ -8,7 +8,7 @@ const Travel = require('../models/Travel')
 
 router.get('/', async (req, res) => {
 	try {
-		const travels = await Travel.find()
+		const travels = await Travel.find(req.query)
 		return res.send(travels)
 	} catch (error) {
 		console.log(error)

@@ -70,15 +70,15 @@ function hasErrors(fieldsError) {
 
 export class Others extends Component {
 	componentDidMount() {
-		this.getOthers()
+		this.getOthers(this.props.budgetYear)
 		// To disabled submit button at the beginning.
 		this.props.form.validateFields()
 	}
 
-	getOthers = async () => {
+	getOthers = async budgetYear => {
 		try {
 			this.setState({ loading: true })
-			const response = await axios.get('/api/v1/others')
+			const response = await axios.get(`/api/v1/others?budgetYear=${budgetYear}`)
 			const data = response.data.map(x => ({ ...x, key: x._id })).reverse()
 			this.setState({ data }, () => this.setState({ loading: false }))
 		} catch (error) {
@@ -99,7 +99,8 @@ export class Others extends Component {
 					voucher: values.voucher,
 					date: values.date.valueOf(),
 					others: values.others,
-					amount: values.amount
+					amount: values.amount,
+					budgetYear: this.props.budgetYear
 				}
 				console.log('Others form data formated: ', data)
 				axios

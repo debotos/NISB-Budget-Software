@@ -48,15 +48,43 @@ export class Summary extends Component {
 						</Menu>
 					</Sider>
 					<Content style={{ padding: '0 24px', minHeight: 280 }}>
-						<Route exact path={`${match.path}/`} component={Intro} />
-						<Route path={`${match.path}/salaries`} component={Salaries} />
-						<Route path={`${match.path}/fringe`} component={Fringe} />
-						<Route path={`${match.path}/consultant`} component={Consultant} />
-						<Route path={`${match.path}/equipment`} component={Equipment} />
-						<Route path={`${match.path}/supplies`} component={Supplies} />
-						<Route path={`${match.path}/travel`} component={Travel} />
-						<Route path={`${match.path}/contractual`} component={Contractual} />
-						<Route path={`${match.path}/others`} component={Others} />
+						<Route
+							exact
+							path={`${match.path}/`}
+							component={props => <Intro {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/salaries`}
+							component={props => <Salaries {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/fringe`}
+							component={props => <Fringe {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/consultant`}
+							component={props => <Consultant {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/equipment`}
+							component={props => <Equipment {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/supplies`}
+							component={props => <Supplies {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/travel`}
+							component={props => <Travel {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/contractual`}
+							component={props => <Contractual {...props} budgetYear={budgetYear} />}
+						/>
+						<Route
+							path={`${match.path}/others`}
+							component={props => <Others {...props} budgetYear={budgetYear} />}
+						/>
 					</Content>
 				</Layout>
 			</>

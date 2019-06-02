@@ -24,15 +24,15 @@ function hasErrors(fieldsError) {
 
 export class Salaries extends Component {
 	componentDidMount() {
-		this.getSalaries()
+		this.getSalaries(this.props.budgetYear)
 		// To disabled submit button at the beginning.
 		this.props.form.validateFields()
 	}
 
-	getSalaries = async () => {
+	getSalaries = async budgetYear => {
 		try {
 			this.setState({ loading: true })
-			const response = await axios.get('/api/v1/salaries')
+			const response = await axios.get(`/api/v1/salaries?budgetYear=${budgetYear}`)
 			const data = response.data.map(x => ({ ...x, key: x._id })).reverse()
 			this.setState({ data }, () => this.setState({ loading: false }))
 		} catch (error) {
@@ -76,7 +76,8 @@ export class Salaries extends Component {
 					date: values.date.valueOf(),
 					name: values.name,
 					designation: values.designation,
-					amount: values.amount
+					amount: values.amount,
+					budgetYear: this.props.budgetYear
 				}
 				console.log('Salaries form data formated: ', data)
 				axios

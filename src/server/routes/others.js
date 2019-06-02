@@ -8,7 +8,7 @@ const Other = require('../models/Other')
 
 router.get('/', async (req, res) => {
 	try {
-		const others = await Other.find()
+		const others = await Other.find(req.query)
 		return res.send(others)
 	} catch (error) {
 		console.log(error)

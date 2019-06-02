@@ -24,15 +24,15 @@ function hasErrors(fieldsError) {
 
 export class Consultant extends Component {
 	componentDidMount() {
-		this.getConsultantList()
+		this.getConsultantList(this.props.budgetYear)
 		// To disabled submit button at the beginning.
 		this.props.form.validateFields()
 	}
 
-	getConsultantList = async () => {
+	getConsultantList = async budgetYear => {
 		try {
 			this.setState({ loading: true })
-			const response = await axios.get('/api/v1/consultant')
+			const response = await axios.get(`/api/v1/consultant?budgetYear=${budgetYear}`)
 			const data = response.data.map(x => ({ ...x, key: x._id })).reverse()
 			this.setState({ data }, () => this.setState({ loading: false }))
 		} catch (error) {
@@ -76,7 +76,8 @@ export class Consultant extends Component {
 					date: values.date.valueOf(),
 					name: values.name,
 					designation: values.designation,
-					amount: values.amount
+					amount: values.amount,
+					budgetYear: this.props.budgetYear
 				}
 				console.log('Consultant form data formated: ', data)
 				axios

@@ -31,6 +31,14 @@ const Schema = new mongoose.Schema(
 			type: Number,
 			required: true,
 			trim: true
+		},
+		budgetYear: {
+			type: String,
+			required: true,
+			minlength: 11,
+			maxlength: 11,
+			trim: true,
+			index: true
 		}
 	},
 	{

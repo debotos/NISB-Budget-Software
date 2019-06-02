@@ -8,7 +8,7 @@ const Consultant = require('../models/Consultant')
 
 router.get('/', async (req, res) => {
 	try {
-		const consultant = await Consultant.find()
+		const consultant = await Consultant.find(req.query)
 		return res.send(consultant)
 	} catch (error) {
 		console.log(error)

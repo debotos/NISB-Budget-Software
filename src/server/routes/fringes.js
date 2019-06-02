@@ -8,7 +8,7 @@ const Fringe = require('../models/Fringe')
 
 router.get('/', async (req, res) => {
 	try {
-		const fringes = await Fringe.find()
+		const fringes = await Fringe.find(req.query)
 		return res.send(fringes)
 	} catch (error) {
 		console.log(error)

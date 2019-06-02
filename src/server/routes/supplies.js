@@ -8,7 +8,7 @@ const Supply = require('../models/Supply')
 
 router.get('/', async (req, res) => {
 	try {
-		const supplies = await Supply.find()
+		const supplies = await Supply.find(req.query)
 		return res.send(supplies)
 	} catch (error) {
 		console.log(error)

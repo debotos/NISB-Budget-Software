@@ -22,13 +22,13 @@ const { Text, Paragraph } = Typography
 
 export class Fringes extends Component {
 	componentDidMount() {
-		this._bootstrap()
+		this._bootstrap(this.props.budgetYear)
 	}
 
 	getBudget = async () => {
 		try {
 			this.setState({ loading: true })
-			const response = await axios.get('/api/v1/budget')
+			const response = await axios.get(`/api/v1/budget?budgetYear=${this.props.budgetYear}`)
 			console.log('Budget got from server ', response.data)
 			return response.data
 		} catch (error) {
@@ -37,10 +37,10 @@ export class Fringes extends Component {
 		}
 	}
 
-	_bootstrap = async () => {
+	_bootstrap = async budgetYear => {
 		try {
 			this.setState({ loading: true })
-			const response = await axios.get('/api/v1/fringes')
+			const response = await axios.get(`/api/v1/fringes?budgetYear=${budgetYear}`)
 			const data = response.data.map(x => ({ ...x, key: x._id })).reverse()
 			const budget = await this.getBudget()
 			this.setState({ data, budget: budget.fringe }, () => this.setState({ loading: false }))

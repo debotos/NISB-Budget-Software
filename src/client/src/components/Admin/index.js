@@ -17,15 +17,22 @@ function hasErrors(fieldsError) {
 
 export class Admin extends Component {
 	componentDidMount() {
-		this.getBudget()
+		this.getBudget(this.props.budgetYear)
 		// To disabled submit button at the beginning.
 		this.props.form.validateFields()
 	}
 
-	getBudget = async () => {
+	componentDidUpdate(prevProps) {
+		console.log(`Budget Year changed from '${prevProps.budgetYear}' to '${this.props.budgetYear}'`)
+		if (this.props.budgetYear !== prevProps.budgetYear) {
+			this.getBudget(this.props.budgetYear)
+		}
+	}
+
+	getBudget = async budgetYear => {
 		try {
 			this.setState({ loading: true })
-			const response = await axios.get('/api/v1/budget')
+			const response = await axios.get(`/api/v1/budget?budgetYear=${budgetYear}`)
 			console.log('Budget got from server ', response.data)
 			this.setState({ data: response.data }, () => this.setState({ loading: false }))
 		} catch (error) {
@@ -41,9 +48,10 @@ export class Admin extends Component {
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
 				this.setState({ working: true })
+				const budgetYear = this.props.budgetYear
 				console.log('Received values of Admin form: ', values)
 				axios
-					.post('/api/v1/budget', values)
+					.post(`/api/v1/budget?budgetYear=${budgetYear}`, { ...values, budgetYear: budgetYear })
 					.then(response => {
 						const data = response.data
 						console.log('Budget form submit response: ', data)
@@ -72,7 +80,18 @@ export class Admin extends Component {
 		const supplyError = isFieldTouched('supply') && getFieldError('supply')
 		const travelError = isFieldTouched('travel') && getFieldError('travel')
 
-		if (loading) return <Spin size="large" />
+		if (loading)
+			return (
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						marginTop: '15px'
+					}}
+				>
+					<Spin size="large" />
+				</div>
+			)
 		const { consultant, fringe, other, salary, supply, travel } = data
 		return (
 			<>

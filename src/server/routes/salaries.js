@@ -8,7 +8,7 @@ const Salary = require('../models/Salary')
 
 router.get('/', async (req, res) => {
 	try {
-		const salaries = await Salary.find()
+		const salaries = await Salary.find(req.query)
 		return res.send(salaries)
 	} catch (error) {
 		console.log(error)

@@ -22,15 +22,15 @@ function hasErrors(fieldsError) {
 
 export class Travels extends Component {
 	componentDidMount() {
-		this.getTravels()
+		this.getTravels(this.props.budgetYear)
 		// To disabled submit button at the beginning.
 		this.props.form.validateFields()
 	}
 
-	getTravels = async () => {
+	getTravels = async budgetYear => {
 		try {
 			this.setState({ loading: true })
-			const response = await axios.get('/api/v1/travels')
+			const response = await axios.get(`/api/v1/travels?budgetYear=${budgetYear}`)
 			const data = response.data.map(x => ({ ...x, key: x._id })).reverse()
 			this.setState({ data }, () => this.setState({ loading: false }))
 		} catch (error) {
@@ -75,7 +75,8 @@ export class Travels extends Component {
 					ta: values.ta,
 					name: values.name,
 					designation: values.designation,
-					amount: values.amount
+					amount: values.amount,
+					budgetYear: this.props.budgetYear
 				}
 				console.log('Travels form data formated: ', data)
 				axios
