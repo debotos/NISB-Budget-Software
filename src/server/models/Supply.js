@@ -30,6 +30,29 @@ const Schema = new mongoose.Schema(
 			maxlength: 11,
 			trim: true,
 			index: true
+		},
+		it: {
+			type: Number,
+			trim: true
+		},
+		vat: {
+			type: Number,
+			trim: true
+		},
+		code: {
+			// Economic Code
+			type: String,
+			required: true,
+			minlength: 2,
+			maxlength: 100,
+			trim: true
+		},
+		type: { // Cash or Cheque
+			type: String,
+			required: true,
+			minlength: 2,
+			maxlength: 100,
+			trim: true
 		}
 	},
 	{
