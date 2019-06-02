@@ -5,6 +5,7 @@ import {
 	Button,
 	DatePicker,
 	InputNumber,
+	Select,
 	Table,
 	Popconfirm,
 	Spin,
@@ -15,6 +16,26 @@ import axios from 'axios'
 import moment from 'moment'
 import numeral from 'numeral'
 import Highlighter from 'react-highlight-words'
+
+const { Option } = Select
+
+const SelectTypeOptions = [
+	<Option key="1" value={`cash`}>
+		Cash
+	</Option>,
+	<Option key="2" value={`cheque`}>
+		Cheque
+	</Option>
+]
+
+const SelectCodeOptions = [
+	<Option key="1" value={`#0000`}>
+		#0000
+	</Option>,
+	<Option key="2" value={`#1111`}>
+		#1111
+	</Option>
+]
 
 function hasErrors(fieldsError) {
 	return Object.keys(fieldsError).some(field => fieldsError[field])
@@ -76,7 +97,11 @@ export class Travels extends Component {
 					name: values.name,
 					designation: values.designation,
 					amount: values.amount,
-					budgetYear: this.props.budgetYear
+					budgetYear: this.props.budgetYear,
+					it: values.it,
+					vat: values.vat,
+					type: values.type,
+					code: values.code
 				}
 				console.log('Travels form data formated: ', data)
 				axios
@@ -124,6 +149,8 @@ export class Travels extends Component {
 		const amountError = isFieldTouched('amount') && getFieldError('amount')
 		const daError = isFieldTouched('da') && getFieldError('da')
 		const taError = isFieldTouched('ta') && getFieldError('ta')
+		const typeError = isFieldTouched('type') && getFieldError('type')
+		const codeError = isFieldTouched('code') && getFieldError('code')
 
 		return (
 			<>
@@ -140,7 +167,7 @@ export class Travels extends Component {
 						})(<DatePicker placeholder="Select Date" />)}
 					</Form.Item>
 
-					<Form.Item validateStatus={daError ? 'error' : ''} help={daError || ''}>
+					<Form.Item label="D.A" validateStatus={daError ? 'error' : ''} help={daError || ''}>
 						{getFieldDecorator('da', {
 							initialValue: 0,
 							rules: [{ required: true, message: 'Provide D.A!' }]
@@ -156,7 +183,7 @@ export class Travels extends Component {
 						)}
 					</Form.Item>
 
-					<Form.Item validateStatus={taError ? 'error' : ''} help={taError || ''}>
+					<Form.Item label="T.A" validateStatus={taError ? 'error' : ''} help={taError || ''}>
 						{getFieldDecorator('ta', {
 							initialValue: 0,
 							rules: [{ required: true, message: 'Provide T.A!' }]
@@ -184,7 +211,11 @@ export class Travels extends Component {
 						})(<Input placeholder="Designation" />)}
 					</Form.Item>
 
-					<Form.Item validateStatus={amountError ? 'error' : ''} help={amountError || ''}>
+					<Form.Item
+						label="Amount"
+						validateStatus={amountError ? 'error' : ''}
+						help={amountError || ''}
+					>
 						{getFieldDecorator('amount', {
 							initialValue: getFieldValue('da') + getFieldValue('ta'),
 							rules: [{ required: true, message: 'Provide Amount!' }]
@@ -194,6 +225,43 @@ export class Travels extends Component {
 								parser={value => value.replace(/৳\s?|(,*)/g, '')}
 								min={0}
 							/>
+						)}
+					</Form.Item>
+					<Form.Item label="IT">
+						{getFieldDecorator('it', {})(
+							<InputNumber
+								formatter={value => `৳ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+								parser={value => value.replace(/৳\s?|(,*)/g, '')}
+								min={0}
+							/>
+						)}
+					</Form.Item>
+
+					<Form.Item label="VAT">
+						{getFieldDecorator('vat', {})(
+							<InputNumber
+								formatter={value => `৳ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+								parser={value => value.replace(/৳\s?|(,*)/g, '')}
+								min={0}
+								placeholder="VAT"
+							/>
+						)}
+					</Form.Item>
+
+					<Form.Item validateStatus={typeError ? 'error' : ''} help={typeError || ''}>
+						{getFieldDecorator('type', {
+							initialValue: 'cash',
+							rules: [{ required: true, message: 'Please provide type!' }]
+						})(<Select style={{ minWidth: 100 }}>{SelectTypeOptions}</Select>)}
+					</Form.Item>
+
+					<Form.Item validateStatus={codeError ? 'error' : ''} help={codeError || ''}>
+						{getFieldDecorator('code', {
+							rules: [{ required: true, message: 'Please provide economic code!' }]
+						})(
+							<Select showSearch style={{ minWidth: 150 }} placeholder="Economic Code">
+								{SelectCodeOptions}
+							</Select>
 						)}
 					</Form.Item>
 
@@ -236,12 +304,20 @@ export default TravelsForm
 const EditableContext = React.createContext()
 
 class EditableCell extends React.Component {
-	getInput = field => {
+	getInput = (field, getFieldDecorator, title, record) => {
 		switch (field) {
 			case 'amount':
 			case 'da':
 			case 'ta':
-				return (
+				return getFieldDecorator(field, {
+					rules: [
+						{
+							required: true,
+							message: `Please Input ${title}!`
+						}
+					],
+					initialValue: this.getInputValue(record, field)
+				})(
 					<InputNumber
 						formatter={value => `৳ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
 						parser={value => value.replace(/৳\s?|(,*)/g, '')}
@@ -249,9 +325,60 @@ class EditableCell extends React.Component {
 					/>
 				)
 			case 'date':
-				return <DatePicker placeholder="Select Date" />
+				return getFieldDecorator(field, {
+					rules: [
+						{
+							required: true,
+							message: `Please Input ${title}!`
+						}
+					],
+					initialValue: this.getInputValue(record, field)
+				})(<DatePicker placeholder="Select Date" />)
+			case 'it':
+				return getFieldDecorator('it', { initialValue: this.getInputValue(record, field) })(
+					<InputNumber
+						formatter={value => `৳ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+						parser={value => value.replace(/৳\s?|(,*)/g, '')}
+						min={0}
+					/>
+				)
+
+			case 'vat':
+				return getFieldDecorator('vat', { initialValue: this.getInputValue(record, field) })(
+					<InputNumber
+						formatter={value => `৳ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+						parser={value => value.replace(/৳\s?|(,*)/g, '')}
+						min={0}
+						placeholder="VAT"
+					/>
+				)
+
+			case 'type':
+				return getFieldDecorator('type', {
+					initialValue: this.getInputValue(record, field),
+					rules: [{ required: true, message: 'Please provide type!' }]
+				})(<Select style={{ minWidth: 100 }}>{SelectTypeOptions}</Select>)
+
+			case 'code':
+				return getFieldDecorator('code', {
+					initialValue: this.getInputValue(record, field),
+					rules: [{ required: true, message: 'Please provide economic code!' }]
+				})(
+					<Select showSearch style={{ minWidth: 100 }} placeholder="Economic Code">
+						{SelectCodeOptions}
+					</Select>
+				)
+
 			default:
-				return <Input />
+				return getFieldDecorator(field, {
+					rules: [
+						{
+							required: true,
+							message: `Please Input ${title}!`
+						}
+					],
+					initialValue: this.getInputValue(record, field)
+				})(<Input />)
 		}
 	}
 
@@ -273,7 +400,11 @@ class EditableCell extends React.Component {
 			case 'amount':
 			case 'da':
 			case 'ta':
+			case 'it':
+			case 'vat':
 				return `${numeral(record[field]).format('0,0.00')} ৳`
+			case 'type':
+				return <span style={{ textTransform: 'capitalize' }}>{record[field]}</span>
 			default:
 				return children
 		}
@@ -285,15 +416,7 @@ class EditableCell extends React.Component {
 			<td {...restProps}>
 				{editing ? (
 					<Form.Item style={{ margin: 0 }}>
-						{getFieldDecorator(dataIndex, {
-							rules: [
-								{
-									required: true,
-									message: `Please Input ${title}!`
-								}
-							],
-							initialValue: this.getInputValue(record, dataIndex)
-						})(this.getInput(dataIndex))}
+						{this.getInput(dataIndex, getFieldDecorator, title, record)}
 					</Form.Item>
 				) : (
 					this.renderDataView(children, record, dataIndex)
@@ -322,7 +445,7 @@ class EditableTable extends React.Component {
 			{
 				title: 'Date',
 				dataIndex: 'date',
-				width: '20%',
+				width: '10%',
 				editable: true,
 				sorter: (a, b) => a.date - b.date
 			},
@@ -345,14 +468,14 @@ class EditableTable extends React.Component {
 			{
 				title: 'Name',
 				dataIndex: 'name',
-				width: '15%',
+				width: '10%',
 				editable: true,
 				...this.getColumnSearchProps('name')
 			},
 			{
 				title: 'Designation',
 				dataIndex: 'designation',
-				width: '15%',
+				width: '10%',
 				editable: true,
 				...this.getColumnSearchProps('designation')
 			},
@@ -363,6 +486,40 @@ class EditableTable extends React.Component {
 				editable: true,
 				// defaultSortOrder: 'descend',
 				sorter: (a, b) => a.amount - b.amount
+			},
+			{
+				title: 'IT',
+				dataIndex: 'it',
+				width: '10%',
+				editable: true,
+				// defaultSortOrder: 'descend',
+				sorter: (a, b) => a.it - b.it
+			},
+			{
+				title: 'VAT',
+				dataIndex: 'vat',
+				width: '10%',
+				editable: true,
+				// defaultSortOrder: 'descend',
+				sorter: (a, b) => a.vat - b.vat
+			},
+			{
+				title: 'Type',
+				dataIndex: 'type',
+				width: '10%',
+				editable: true,
+				// 9
+				key: 'type',
+				filters: [{ text: 'Cash', value: 'cash' }, { text: 'Cheque', value: 'cheque' }],
+				onFilter: (value, record) => record.type.includes(value),
+				sorter: (a, b) => a.type.length - b.type.length
+			},
+			{
+				title: 'Code',
+				dataIndex: 'code',
+				width: '10%',
+				editable: true,
+				...this.getColumnSearchProps('code')
 			},
 			{
 				title: 'operation',
@@ -445,7 +602,11 @@ class EditableTable extends React.Component {
 					ta: row.ta,
 					name: row.name,
 					designation: row.designation,
-					amount: row.amount
+					amount: row.amount,
+					it: row.it,
+					vat: row.vat,
+					type: row.type,
+					code: row.code
 				}
 				console.log('Travels updated form data formated: ', data)
 				/* Instant UI update */

@@ -151,7 +151,11 @@ class Cell extends React.Component {
 					'DD-MM-YYYY'
 				)})`
 			case 'amount':
+			case 'it':
+			case 'vat':
 				return `${numeral(record[field]).format('0,0.00')} ৳`
+			case 'type':
+				return <span style={{ textTransform: 'capitalize' }}>{record[field]}</span>
 			default:
 				return children
 		}
@@ -180,25 +184,25 @@ class TableView extends React.Component {
 			{
 				title: 'Date',
 				dataIndex: 'date',
-				width: '20%',
+				width: '15%',
 				sorter: (a, b) => a.date - b.date
 			},
 			{
 				title: 'Month',
 				dataIndex: 'month',
-				width: '20%',
+				width: '10%',
 				...this.getColumnSearchProps('month')
 			},
 			{
 				title: 'Name',
 				dataIndex: 'name',
-				width: '20%',
+				width: '10%',
 				...this.getColumnSearchProps('name')
 			},
 			{
 				title: 'Designation',
 				dataIndex: 'designation',
-				width: '20%',
+				width: '10%',
 				...this.getColumnSearchProps('designation')
 			},
 			{
@@ -207,6 +211,40 @@ class TableView extends React.Component {
 				width: '10%',
 				// defaultSortOrder: 'descend',
 				sorter: (a, b) => a.amount - b.amount
+			},
+			{
+				title: 'IT',
+				dataIndex: 'it',
+				width: '10%',
+				editable: true,
+				// defaultSortOrder: 'descend',
+				sorter: (a, b) => a.it - b.it
+			},
+			{
+				title: 'VAT',
+				dataIndex: 'vat',
+				width: '10%',
+				editable: true,
+				// defaultSortOrder: 'descend',
+				sorter: (a, b) => a.vat - b.vat
+			},
+			{
+				title: 'Type',
+				dataIndex: 'type',
+				width: '10%',
+				editable: true,
+				// 9
+				key: 'type',
+				filters: [{ text: 'Cash', value: 'cash' }, { text: 'Cheque', value: 'cheque' }],
+				onFilter: (value, record) => record.type.includes(value),
+				sorter: (a, b) => a.type.length - b.type.length
+			},
+			{
+				title: 'Code',
+				dataIndex: 'code',
+				width: '10%',
+				editable: true,
+				...this.getColumnSearchProps('code')
 			}
 		]
 	}

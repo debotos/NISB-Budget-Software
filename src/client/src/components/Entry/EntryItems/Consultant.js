@@ -24,7 +24,6 @@ function hasErrors(fieldsError) {
 	return Object.keys(fieldsError).some(field => fieldsError[field])
 }
 
-// 5
 const SelectTypeOptions = [
 	<Option key="1" value={`cash`}>
 		Cash
@@ -99,7 +98,6 @@ export class Consultant extends Component {
 					designation: values.designation,
 					amount: values.amount,
 					budgetYear: this.props.budgetYear,
-					// 3
 					it: values.it,
 					vat: values.vat,
 					type: values.type,
@@ -143,7 +141,6 @@ export class Consultant extends Component {
 		const nameError = isFieldTouched('name') && getFieldError('name')
 		const designationError = isFieldTouched('designation') && getFieldError('designation')
 		const amountError = isFieldTouched('amount') && getFieldError('amount')
-		// 1
 		const typeError = isFieldTouched('type') && getFieldError('type')
 		const codeError = isFieldTouched('code') && getFieldError('code')
 
@@ -179,7 +176,6 @@ export class Consultant extends Component {
 							rules: [{ required: true, message: 'Provide Designation!' }]
 						})(<Input placeholder="Designation" />)}
 					</Form.Item>
-
 					<Form.Item
 						label="Amount"
 						validateStatus={amountError ? 'error' : ''}
@@ -196,7 +192,6 @@ export class Consultant extends Component {
 						)}
 					</Form.Item>
 
-					{/* 2 */}
 					<Form.Item label="IT">
 						{getFieldDecorator('it', {})(
 							<InputNumber
@@ -274,7 +269,7 @@ export default ConsultantForm
 const EditableContext = React.createContext()
 
 class EditableCell extends React.Component {
-	// 7
+	
 	getInput = (field, getFieldDecorator, title, record) => {
 		switch (field) {
 			case 'amount':
@@ -390,7 +385,7 @@ class EditableCell extends React.Component {
 		}
 	}
 
-	// 6
+
 	renderCell = ({ getFieldDecorator }) => {
 		const { editing, dataIndex, title, record, index, children, ...restProps } = this.props
 		return (
@@ -415,7 +410,6 @@ class EditableTable extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = { editingKey: '' }
-		// 9
 		this.columns = [
 			{
 				title: 'Voucher',
@@ -460,7 +454,6 @@ class EditableTable extends React.Component {
 				// defaultSortOrder: 'descend',
 				sorter: (a, b) => a.amount - b.amount
 			},
-			// 4
 			{
 				title: 'IT',
 				dataIndex: 'it',
@@ -483,7 +476,7 @@ class EditableTable extends React.Component {
 				width: '10%',
 				editable: true,
 				// 9
-				key: 'name',
+				key: 'type',
 				filters: [{ text: 'Cash', value: 'cash' }, { text: 'Cheque', value: 'cheque' }],
 				onFilter: (value, record) => record.type.includes(value),
 				sorter: (a, b) => a.type.length - b.type.length
@@ -576,7 +569,6 @@ class EditableTable extends React.Component {
 					name: row.name,
 					designation: row.designation,
 					amount: row.amount,
-					// 8
 					it: row.it,
 					vat: row.vat,
 					type: row.type,
