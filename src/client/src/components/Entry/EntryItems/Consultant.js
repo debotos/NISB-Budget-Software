@@ -17,6 +17,8 @@ import moment from 'moment'
 import numeral from 'numeral'
 import Highlighter from 'react-highlight-words'
 
+import checkVoucher from '../../../utils/checkVoucher'
+
 const { MonthPicker } = DatePicker
 const { Option } = Select
 
@@ -86,10 +88,15 @@ export class Consultant extends Component {
 
 	handleSubmit = e => {
 		e.preventDefault()
-		this.props.form.validateFields((err, values) => {
+		this.props.form.validateFields(async (err, values) => {
 			if (!err) {
 				this.setState({ working: true })
 				console.log('Received values of Consultant form: ', values)
+				const voucherExist = await checkVoucher('consultant', values.voucher)
+				if (voucherExist) {
+					this.setState({ working: false })
+					return message.error('Voucher Code Already Exists!')
+				}
 				const data = {
 					voucher: values.voucher,
 					month: values.month.format('MMMM YYYY'),
@@ -269,7 +276,6 @@ export default ConsultantForm
 const EditableContext = React.createContext()
 
 class EditableCell extends React.Component {
-	
 	getInput = (field, getFieldDecorator, title, record) => {
 		switch (field) {
 			case 'amount':
@@ -384,7 +390,6 @@ class EditableCell extends React.Component {
 				return children
 		}
 	}
-
 
 	renderCell = ({ getFieldDecorator }) => {
 		const { editing, dataIndex, title, record, index, children, ...restProps } = this.props

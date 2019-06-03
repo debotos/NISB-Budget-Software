@@ -17,6 +17,8 @@ import moment from 'moment'
 import numeral from 'numeral'
 import Highlighter from 'react-highlight-words'
 
+import checkVoucher from '../../../utils/checkVoucher'
+
 const { MonthPicker } = DatePicker
 const { Option } = Select
 
@@ -86,10 +88,15 @@ export class Fringes extends Component {
 
 	handleSubmit = e => {
 		e.preventDefault()
-		this.props.form.validateFields((err, values) => {
+		this.props.form.validateFields(async (err, values) => {
 			if (!err) {
 				this.setState({ working: true })
 				console.log('Received values of Fringes form: ', values)
+				const voucherExist = await checkVoucher('fringes', values.voucher)
+				if (voucherExist) {
+					this.setState({ working: false })
+					return message.error('Voucher Code Already Exists!')
+				}
 				const data = {
 					voucher: values.voucher,
 					month: values.month.format('MMMM YYYY'),

@@ -17,6 +17,8 @@ import moment from 'moment'
 import numeral from 'numeral'
 import Highlighter from 'react-highlight-words'
 
+import checkVoucher from '../../../utils/checkVoucher'
+
 const Option = Select.Option
 const options = [
 	<Option key={1} value="Coordination of the surveillance activities">
@@ -109,10 +111,15 @@ export class Others extends Component {
 
 	handleSubmit = e => {
 		e.preventDefault()
-		this.props.form.validateFields((err, values) => {
+		this.props.form.validateFields(async (err, values) => {
 			if (!err) {
 				this.setState({ working: true })
 				console.log('Received values of Others form: ', values)
+				const voucherExist = await checkVoucher('others', values.voucher)
+				if (voucherExist) {
+					this.setState({ working: false })
+					return message.error('Voucher Code Already Exists!')
+				}
 				const data = {
 					voucher: values.voucher,
 					date: values.date.valueOf(),

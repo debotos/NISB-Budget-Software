@@ -7,6 +7,8 @@ const Schema = new mongoose.Schema(
 			required: true,
 			minlength: 2,
 			maxlength: 100,
+			index: true,
+			unique: true,
 			trim: true
 		},
 		date: {
@@ -47,7 +49,8 @@ const Schema = new mongoose.Schema(
 			maxlength: 100,
 			trim: true
 		},
-		type: { // Cash or Cheque
+		type: {
+			// Cash or Cheque
 			type: String,
 			required: true,
 			minlength: 2,
