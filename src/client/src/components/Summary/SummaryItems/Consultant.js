@@ -17,6 +17,8 @@ import moment from 'moment'
 import numeral from 'numeral'
 import Highlighter from 'react-highlight-words'
 
+import generateExcel from '../../../utils/generateExcel'
+
 const { RangePicker } = DatePicker
 const { Text, Paragraph } = Typography
 
@@ -107,7 +109,27 @@ export class Consultant extends Component {
 									style={{ marginRight: '15px' }}
 								/>
 								<strong>View Details</strong>
-								<Switch style={{ marginLeft: '10px' }} onChange={this.onChange} />
+								<Switch style={{ margin: '0 30px 0 10px' }} onChange={this.onChange} />
+								<Button
+									type="dashed"
+									shape="circle"
+									icon="download"
+									size="small"
+									onClick={() =>
+										generateExcel(data, 'Consultant', [
+											'Voucher',
+											'Date',
+											'Month',
+											'Name',
+											'Designation',
+											'Economic Code',
+											'Payment Type',
+											'Amount',
+											'IT',
+											'VAT'
+										])
+									}
+								/>
 							</>
 						}
 					>

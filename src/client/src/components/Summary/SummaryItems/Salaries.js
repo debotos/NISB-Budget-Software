@@ -115,7 +115,20 @@ export class Salaries extends Component {
 									shape="circle"
 									icon="download"
 									size="small"
-									onClick={() => generateExcel(data, 'Salaries')}
+									onClick={() =>
+										generateExcel(data, 'Salaries', [
+											'Voucher',
+											'Date',
+											'Month',
+											'Name',
+											'Designation',
+											'Economic Code',
+											'Payment Type',
+											'Amount',
+											'IT',
+											'VAT'
+										])
+									}
 								/>
 							</>
 						}
