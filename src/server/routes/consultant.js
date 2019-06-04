@@ -1,12 +1,13 @@
 const router = require('express').Router()
 
 const Consultant = require('../models/Consultant')
+const auth = require('../middleware/auth')
 
 // @route   GET api/${version}/consultant
 // @desc    get Consultant List
 // @access  Public
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
 	try {
 		const consultant = await Consultant.find(req.query)
 		return res.send(consultant)
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
 // @desc    Add a Consultant
 // @access  Public
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try {
 		const consultant = new Consultant(req.body)
 		const response = await consultant.save()
@@ -35,7 +36,7 @@ router.post('/', async (req, res) => {
 // @desc    Update a Consultant
 // @access  Public
 
-router.post('/:id', async (req, res) => {
+router.post('/:id', auth, async (req, res) => {
 	try {
 		const id = req.params.id
 		const response = await Consultant.findByIdAndUpdate(id, { $set: req.body }, { new: true })
@@ -50,7 +51,7 @@ router.post('/:id', async (req, res) => {
 // @desc    Delete a Consultant
 // @access  Public
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
 	try {
 		const id = req.params.id
 		await Consultant.findByIdAndDelete(id)

@@ -1,12 +1,13 @@
 const router = require('express').Router()
 
 const Salary = require('../models/Salary')
+const auth = require('../middleware/auth')
 
 // @route   GET api/${version}/salaries
 // @desc    get Salaries
 // @access  Public
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
 	try {
 		const salaries = await Salary.find(req.query)
 		return res.send(salaries)
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
 // @desc    Add a Salary
 // @access  Public
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try {
 		const salary = new Salary(req.body)
 		const response = await salary.save()
@@ -35,7 +36,7 @@ router.post('/', async (req, res) => {
 // @desc    Update a Salary
 // @access  Public
 
-router.post('/:id', async (req, res) => {
+router.post('/:id', auth, async (req, res) => {
 	try {
 		const id = req.params.id
 		const response = await Salary.findByIdAndUpdate(id, { $set: req.body }, { new: true })
@@ -50,7 +51,7 @@ router.post('/:id', async (req, res) => {
 // @desc    Delete a Salary
 // @access  Public
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
 	try {
 		const id = req.params.id
 		await Salary.findByIdAndDelete(id)

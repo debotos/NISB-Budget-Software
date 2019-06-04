@@ -1,12 +1,13 @@
 const router = require('express').Router()
 
 const Travel = require('../models/Travel')
+const auth = require('../middleware/auth')
 
 // @route   GET api/${version}/travels
 // @desc    get Travels
 // @access  Public
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
 	try {
 		const travels = await Travel.find(req.query)
 		return res.send(travels)
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
 // @desc    Add a Travel
 // @access  Public
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try {
 		const travel = new Travel(req.body)
 		const response = await travel.save()
@@ -35,7 +36,7 @@ router.post('/', async (req, res) => {
 // @desc    Update a Travel
 // @access  Public
 
-router.post('/:id', async (req, res) => {
+router.post('/:id', auth, async (req, res) => {
 	try {
 		const id = req.params.id
 		const response = await Travel.findByIdAndUpdate(id, { $set: req.body }, { new: true })
@@ -50,7 +51,7 @@ router.post('/:id', async (req, res) => {
 // @desc    Delete a Travel
 // @access  Public
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
 	try {
 		const id = req.params.id
 		await Travel.findByIdAndDelete(id)

@@ -1,12 +1,13 @@
 const router = require('express').Router()
 
 const Budget = require('../models/Budget')
+const auth = require('../middleware/auth')
 
 // @route   GET api/${version}/budget
 // @desc    get Budget
 // @access  Public
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
 	try {
 		const budget = await Budget.find(req.query)
 		return res.send(
@@ -22,7 +23,7 @@ router.get('/', async (req, res) => {
 // @desc    Update Budget
 // @access  Public
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try {
 		const data = await Budget.find(req.query)
 		const budget = data[0]
