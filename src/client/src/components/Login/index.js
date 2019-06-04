@@ -3,7 +3,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { Form, Icon, Input, Button, notification } from 'antd'
 
-import { history } from '../../App'
+import setAuthToken from '../../utils/setAuthToken'
 import { setCurrentUser } from '../../redux/actions/authActions'
 
 export class Login extends Component {
@@ -27,7 +27,8 @@ export class Login extends Component {
 					.then(response => {
 						this.setState({ loading: false })
 						const { token, user } = response.data
-						// console.log(response.data)
+						// Set auth token header auth
+						setAuthToken(token)
 						localStorage.setItem('jwtToken', token)
 						/* Save to Redux for app use*/
 						/* Also it will instantly redirect the user */
