@@ -5,6 +5,7 @@ const supplies = require('../routes/supplies')
 const travels = require('../routes/travels')
 const others = require('../routes/others')
 const budget = require('../routes/budget')
+const users = require('../routes/users')
 const error = require('../middleware/error')
 
 const version = process.env.API_VERSION || 'v1'
@@ -17,5 +18,6 @@ module.exports = function(app) {
 	app.use(`/api/${version}/travels`, travels)
 	app.use(`/api/${version}/budget`, budget)
 	app.use(`/api/${version}/others`, others)
+	app.use(`/api/${version}/users`, users)
 	app.use(error)
 }
