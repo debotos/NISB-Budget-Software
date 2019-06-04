@@ -1,14 +1,46 @@
 import React from 'react'
-import { Layout, Menu, Select } from 'antd'
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom'
+import { Layout } from 'antd'
+import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
+import { createBrowserHistory as createHistory } from 'history'
+import jwt_decode from 'jwt-decode'
+import { Provider } from 'react-redux'
+import moment from 'moment'
 
+import Login from './components/Login'
 import Admin from './components/Admin'
 import Entry from './components/Entry'
 import Summary from './components/Summary'
-import MenuItem from 'antd/lib/menu/MenuItem'
+
+import PrivateRoute from './utils/PrivateRoute'
+import PublicRoute from './utils/PublicRoute'
+
+import setAuthToken from './utils/setAuthToken'
+import { setCurrentUser, logoutUser } from './redux/actions/authActions'
+import store from './redux/store'
+import Navigation from './components/Common/Navigation'
 
 const { Header, Content, Footer } = Layout
-const { Option } = Select
+
+// Check for token
+if (localStorage.jwtToken) {
+	// Set auth token header auth
+	setAuthToken(localStorage.jwtToken)
+	// Decode token and get user info and exp
+	const decoded = jwt_decode(localStorage.jwtToken)
+	console.log('Decoded local data ', decoded)
+	// Set user and isAuthenticated
+	store.dispatch(setCurrentUser(decoded))
+
+	// Check for expired token
+	const currentTime = moment().valueOf()
+	console.log('current timestamp ', currentTime)
+	if (decoded.exp < currentTime) {
+		// Logout user
+		store.dispatch(logoutUser())
+	}
+}
+
+export const history = createHistory()
 
 class App extends React.Component {
 	state = { budgetYear: `${new Date().getFullYear() - 1} - ${new Date().getFullYear()}` }
@@ -18,66 +50,40 @@ class App extends React.Component {
 	render() {
 		const { budgetYear } = this.state
 
-		let YearOptions = []
-		const currentYear = new Date().getFullYear()
-		const tillYear = currentYear - 10
-
-		for (let year = currentYear; year !== tillYear; year--) {
-			const ItemYear = `${year - 1} - ${year}`
-			YearOptions.push(
-				<Option key={`item_${year}`} value={ItemYear}>
-					{ItemYear}
-				</Option>
-			)
-		}
-
 		return (
-			<Router>
-				<Layout style={{ minHeight: '100vh' }}>
-					<Header className="header">
-						<div className="logo">
-							<h1 style={{ color: '#fff', margin: 0 }}>NISB</h1>
-						</div>
-						<Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
-							<Menu.Item key="1">
-								Summary
-								<Link to="/" />
-							</Menu.Item>
-							<Menu.Item key="2">
-								Entry
-								<Link to="/entry" />
-							</Menu.Item>
-							<Menu.Item key="3">
-								Admin
-								<Link to="/admin" />
-							</Menu.Item>
-							<MenuItem key="4">
-								<Select
-									defaultValue={budgetYear}
-									style={{ minWidth: 130 }}
-									onChange={this.handleChange}
-								>
-									{YearOptions}
-								</Select>
-							</MenuItem>
-						</Menu>
-					</Header>
-					<Content style={{ padding: '0 50px' }}>
-						<Switch>
-							<Route
-								path="/summary"
-								render={props => <Summary {...props} budgetYear={budgetYear} />}
-							/>
-							<Route path="/entry" render={props => <Entry {...props} budgetYear={budgetYear} />} />
-							<Route path="/admin" render={props => <Admin {...props} budgetYear={budgetYear} />} />
-							<Redirect to="/summary" />
-						</Switch>
-					</Content>
-					<Footer style={{ textAlign: 'center' }}>
-						©{new Date().getFullYear()} Created by Touhidur Rahman
-					</Footer>
-				</Layout>
-			</Router>
+			<Provider store={store}>
+				<Router history={history}>
+					<Layout style={{ minHeight: '100vh' }}>
+						<Header className="header">
+							<div className="logo">
+								<h1 style={{ color: '#fff', margin: 0 }}>NISB</h1>
+							</div>
+							<Navigation budgetYear={budgetYear} handleChange={this.handleChange} />
+						</Header>
+						<Content style={{ padding: '0 50px' }}>
+							<Switch>
+								<PublicRoute exact path="/" component={Login} />
+								<PrivateRoute
+									path="/summary"
+									render={props => <Summary {...props} budgetYear={budgetYear} />}
+								/>
+								<PrivateRoute
+									path="/entry"
+									render={props => <Entry {...props} budgetYear={budgetYear} />}
+								/>
+								<PrivateRoute
+									path="/admin"
+									render={props => <Admin {...props} budgetYear={budgetYear} />}
+								/>
+								<Redirect to="/" />
+							</Switch>
+						</Content>
+						<Footer style={{ textAlign: 'center' }}>
+							©{new Date().getFullYear()} Created by Touhidur Rahman
+						</Footer>
+					</Layout>
+				</Router>
+			</Provider>
 		)
 	}
 }
