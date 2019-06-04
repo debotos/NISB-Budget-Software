@@ -5,5 +5,5 @@
 
 module.exports = {
 	mongoURI: process.env.MONGO_URI,
-	JWTPrivateKey: process.env.JWT_PRIVATE_KEY
+	jwtPrivateKey: process.env.JWT_PRIVATE_KEY
 }

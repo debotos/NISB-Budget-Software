@@ -3,6 +3,8 @@ import { Menu, Select } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import { logoutUser } from '../../redux/actions/authActions'
+
 const { Option } = Select
 
 class Navigation extends Component {
@@ -47,6 +49,9 @@ class Navigation extends Component {
 							{YearOptions}
 						</Select>
 					</Menu.Item>
+					<Menu.Item key="5" style={{ float: 'right' }} onClick={() => this.props.logoutUser()}>
+						Logout
+					</Menu.Item>
 				</Menu>
 			)
 		} else {
@@ -59,8 +64,11 @@ class Navigation extends Component {
 const mapStateToProps = state => ({
 	isAuthenticated: state.auth.isAuthenticated
 })
+const mapDispatchToProps = dispatch => ({
+	logoutUser: () => dispatch(logoutUser())
+})
 
 export default connect(
 	mapStateToProps,
-	null
+	mapDispatchToProps
 )(Navigation)

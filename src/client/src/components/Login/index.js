@@ -1,37 +1,47 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { Form, Icon, Input, Button } from 'antd'
+import { Form, Icon, Input, Button, notification } from 'antd'
 
 import { history } from '../../App'
 import { setCurrentUser } from '../../redux/actions/authActions'
 
 export class Login extends Component {
-	state = { error: '', loading: false }
+	Nofify = (type, title, body) => {
+		notification[type]({
+			message: title,
+			description: body
+		})
+	}
+
+	state = { loading: false }
 
 	handleSubmit = e => {
 		e.preventDefault()
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				this.setState({ loading: true, error: '' })
+				this.setState({ loading: true })
 				console.log('Received values of Login form: ', values)
 				axios
 					.post(`/api/v1/users/login`, values)
 					.then(response => {
 						this.setState({ loading: false })
-						console.log(response)
+						const { token, user } = response.data
+						// console.log(response.data)
+						localStorage.setItem('jwtToken', token)
+						/* Save to Redux for app use*/
+						/* Also it will instantly redirect the user */
+						this.props.setUser(user)
 					})
 					.catch(error => {
 						this.setState({ loading: false })
 						let msg = 'Check Network Connection!'
 						if (error.response) {
-							// The request was made and the server responded with a status code
-							// that falls out of the range of 2xx
-							const keys = Object.keys(error.response.data.message)
-							msg = error.response.data.message[keys[0]]
 							console.log('Error Data: ', error.response.data)
+							const keys = Object.keys(error.response.data)
+							msg = error.response.data[keys[0]]
 						}
-						this.setState({ error: msg })
+						this.Nofify('error', msg, `Please contact to the admin if you don't have any account!`)
 					})
 			}
 		})
@@ -39,8 +49,8 @@ export class Login extends Component {
 
 	render() {
 		const { getFieldDecorator } = this.props.form
-		const { error, loading } = this.state
-		console.log(error, loading)
+		const { loading } = this.state
+
 		return (
 			<div
 				style={{ height: '100vh', display: 'flex', justifyContent: 'center', marginTop: '30vh' }}

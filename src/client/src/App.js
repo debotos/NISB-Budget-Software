@@ -1,10 +1,9 @@
 import React from 'react'
 import { Layout } from 'antd'
-import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
+import { Router, Redirect, Switch } from 'react-router-dom'
 import { createBrowserHistory as createHistory } from 'history'
 import jwt_decode from 'jwt-decode'
 import { Provider } from 'react-redux'
-import moment from 'moment'
 
 import Login from './components/Login'
 import Admin from './components/Admin'
@@ -21,18 +20,17 @@ import Navigation from './components/Common/Navigation'
 
 const { Header, Content, Footer } = Layout
 
-// Check for token
 if (localStorage.jwtToken) {
+	console.log('jwtToken Exists!')
 	// Set auth token header auth
 	setAuthToken(localStorage.jwtToken)
 	// Decode token and get user info and exp
 	const decoded = jwt_decode(localStorage.jwtToken)
-	console.log('Decoded local data ', decoded)
 	// Set user and isAuthenticated
 	store.dispatch(setCurrentUser(decoded))
 
 	// Check for expired token
-	const currentTime = moment().valueOf()
+	const currentTime = Date.now() / 1000
 	console.log('current timestamp ', currentTime)
 	if (decoded.exp < currentTime) {
 		// Logout user
@@ -65,15 +63,15 @@ class App extends React.Component {
 								<PublicRoute exact path="/" component={Login} />
 								<PrivateRoute
 									path="/summary"
-									render={props => <Summary {...props} budgetYear={budgetYear} />}
+									component={props => <Summary {...props} budgetYear={budgetYear} />}
 								/>
 								<PrivateRoute
 									path="/entry"
-									render={props => <Entry {...props} budgetYear={budgetYear} />}
+									component={props => <Entry {...props} budgetYear={budgetYear} />}
 								/>
 								<PrivateRoute
 									path="/admin"
-									render={props => <Admin {...props} budgetYear={budgetYear} />}
+									component={props => <Admin {...props} budgetYear={budgetYear} />}
 								/>
 								<Redirect to="/" />
 							</Switch>

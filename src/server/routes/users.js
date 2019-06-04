@@ -116,9 +116,11 @@ router.post('/login', async (req, res) => {
 	}
 
 	const token = user.generateAuthToken()
+	const userData = await User.findOne({ email: req.body.email }).select('-password')
 	res.json({
 		success: true,
-		token: token
+		token: token,
+		user: userData
 	})
 })
 
