@@ -11,9 +11,10 @@ class Navigation extends Component {
 	render() {
 		let YearOptions = []
 		const currentYear = new Date().getFullYear()
+		const fromYear = currentYear + 6 /* 6 Years ahead */
 		const tillYear = currentYear - 10
 
-		for (let year = currentYear; year !== tillYear; year--) {
+		for (let year = fromYear; year !== tillYear; year--) {
 			const ItemYear = `${year - 1} - ${year}`
 			YearOptions.push(
 				<Option key={`item_${year}`} value={ItemYear}>
