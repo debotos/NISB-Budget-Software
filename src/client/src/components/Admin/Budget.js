@@ -77,6 +77,7 @@ export class Budget extends Component {
 		const fringeError = isFieldTouched('fringe') && getFieldError('fringe')
 		const otherError = isFieldTouched('other') && getFieldError('other')
 		const supplyError = isFieldTouched('supply') && getFieldError('supply')
+		const equipmentError = isFieldTouched('equipment') && getFieldError('equipment')
 		const travelError = isFieldTouched('travel') && getFieldError('travel')
 
 		if (loading)
@@ -91,7 +92,7 @@ export class Budget extends Component {
 					<Spin size="large" />
 				</div>
 			)
-		const { consultant, fringe, other, salary, supply, travel } = data
+		const { consultant, fringe, other, salary, supply,equipment, travel } = data
 		return (
 			<Form layout="horizontal" onSubmit={this.handleSubmit}>
 				<Form.Item
@@ -157,6 +158,24 @@ export class Budget extends Component {
 					{getFieldDecorator('supply', {
 						initialValue: supply,
 						rules: [{ required: true, message: 'Provide Supplies Budget!' }]
+					})(
+						<InputNumber
+							style={{ minWidth: '200px' }}
+							formatter={value => `৳ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+							parser={value => value.replace(/৳\s?|(,*)/g, '')}
+							min={0}
+						/>
+					)}
+				</Form.Item>
+				<Form.Item
+					label="Equipment Budget"
+					validateStatus={equipmentError ? 'error' : ''}
+					help={equipmentError || ''}
+					{...formItemLayout}
+				>
+					{getFieldDecorator('equipment', {
+						initialValue: equipment,
+						rules: [{ required: true, message: 'Provide Equipment Budget!' }]
 					})(
 						<InputNumber
 							style={{ minWidth: '200px' }}

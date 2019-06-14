@@ -14,6 +14,7 @@ export default (data, type, columns) => {
 			total: x.amount,
 			'others type': x.others && x.others[0],
 			'supplies type': x.supplies && x.supplies[0],
+			'equipment type': x.equipment,
 			'd.a': x.da,
 			't.a': x.ta
 		}

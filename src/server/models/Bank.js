@@ -27,6 +27,11 @@ const Schema = new mongoose.Schema(
 			required: true,
 			trim: true
 		},
+		equipment: {
+			type: Number,
+			required: true,
+			trim: true
+		},
 		travel: {
 			type: Number,
 			required: true,
