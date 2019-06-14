@@ -7,11 +7,11 @@ function validateBasicProfileUpdateInupt(data) {
 
 	// full_name
 	if (!Validator.isLength(data.full_name, { min: 3, max: 200 })) {
-		errors.full_name = 'Full Name at least have to be 3 character long'
+		errors.full_name = 'Full Name at least have to be 3 character long!'
 	}
 
 	if (Validator.isEmpty(data.full_name)) {
-		errors.full_name = 'Full Name field is required'
+		errors.full_name = 'Full Name field is required!'
 	}
 	return {
 		errors,
@@ -29,19 +29,19 @@ function validatePasswordUpdateInput(data) {
 	// password
 	if (!Validator.isEmpty(data.cpassword)) {
 		if (!Validator.isLength(data.password, { min: 8 })) {
-			errors.password = 'Password must be at least 8 characters'
+			errors.password = 'Password must be at least 8 characters!'
 		}
 
 		if (Validator.isEmpty(data.password)) {
-			errors.password = 'Password field is required'
+			errors.password = 'Password field is required!'
 		}
 
 		if (Validator.isEmpty(data.password2)) {
-			errors.password2 = 'Confirm Password field is required'
+			errors.password2 = 'Confirm Password field is required!'
 		}
 
 		if (!Validator.equals(data.password, data.password2)) {
-			errors.password2 = 'Passwords must match'
+			errors.password2 = 'Passwords must match!'
 		}
 	} else {
 		errors.cpassword = 'Current password Required!'

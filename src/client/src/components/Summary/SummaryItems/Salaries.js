@@ -38,6 +38,17 @@ export class Salaries extends Component {
 			message.error('Failed to load the Budget Data!')
 		}
 	}
+	getBank = async () => {
+		try {
+			this.setState({ loading: true })
+			const response = await axios.get(`/api/v1/bank?budgetYear=${this.props.budgetYear}`)
+			console.log('Bank issued budget data got from server ', response.data)
+			return response.data
+		} catch (error) {
+			console.log(error)
+			message.error('Failed to load the Bank Data!')
+		}
+	}
 
 	_bootstrap = async budgetYear => {
 		try {
@@ -45,7 +56,10 @@ export class Salaries extends Component {
 			const response = await axios.get(`/api/v1/salaries?budgetYear=${budgetYear}`)
 			const data = response.data.map(x => ({ ...x, key: x._id })).reverse()
 			const budget = await this.getBudget()
-			this.setState({ data, budget: budget.salary }, () => this.setState({ loading: false }))
+			const bank = await this.getBank()
+			this.setState({ data, budget: budget.salary, bank: bank.salary }, () =>
+				this.setState({ loading: false })
+			)
 		} catch (error) {
 			console.log(error)
 			message.error('Failed to load the data! Please refresh!')
@@ -64,13 +78,14 @@ export class Salaries extends Component {
 		loading: true,
 		data: [],
 		budget: 0,
+		bank: 0,
 		showDetails: false,
 		/* Range Selector */
 		value: []
 	}
 
 	render() {
-		const { loading, budget, showDetails, value } = this.state
+		const { loading, budget, showDetails, value, bank } = this.state
 		let { data } = this.state
 		let totalMoney = 0
 		data.forEach(x => (totalMoney = totalMoney + x.amount))
@@ -88,8 +103,11 @@ export class Salaries extends Component {
 				<Card title="Salaries And Wages Budget Overview">
 					<Card type="inner" title="Budget">
 						<div style={{ display: 'flex' }}>
-							<Text code>Budget:</Text>
+							<Text code>Original Budget:</Text>
 							<Paragraph strong copyable>{`${numeral(budget).format('0,0.00')} ৳`}</Paragraph>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<Text code>Bank Issued:</Text>
+							<Paragraph strong copyable>{`${numeral(bank).format('0,0.00')} ৳`}</Paragraph>
 						</div>
 					</Card>
 					<Card
@@ -141,8 +159,13 @@ export class Salaries extends Component {
 
 					<Card style={{ marginTop: 16 }} type="inner" title="Balance">
 						<div style={{ display: 'flex' }}>
-							<Text code>Balance:</Text>
+							<Text code>Balance(Original):</Text>
 							<Paragraph mark strong copyable>{`${numeral(budget - totalMoney).format(
+								'0,0.00'
+							)} ৳`}</Paragraph>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<Text code>Balance(Bank):</Text>
+							<Paragraph mark strong copyable>{`${numeral(bank - totalMoney).format(
 								'0,0.00'
 							)} ৳`}</Paragraph>
 						</div>

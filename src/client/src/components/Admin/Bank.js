@@ -95,14 +95,14 @@ export class Bank extends Component {
 		return (
 			<Form layout="horizontal" onSubmit={this.handleSubmit}>
 				<Form.Item
-					label="Salaries And Wages Bank"
+					label="Salaries And Wages Bank Issued Amount"
 					validateStatus={salaryError ? 'error' : ''}
 					help={salaryError || ''}
 					{...formItemLayout}
 				>
 					{getFieldDecorator('salary', {
 						initialValue: salary,
-						rules: [{ required: true, message: 'Provide Salaries And Wages Bank!' }]
+						rules: [{ required: true, message: 'Provide Salaries And Wages Bank Issued Amount!' }]
 					})(
 						<InputNumber
 							style={{ minWidth: '200px' }}
@@ -113,14 +113,14 @@ export class Bank extends Component {
 					)}
 				</Form.Item>
 				<Form.Item
-					label="Fringe Bank"
+					label="Fringe Bank Issued Amount"
 					validateStatus={fringeError ? 'error' : ''}
 					help={fringeError || ''}
 					{...formItemLayout}
 				>
 					{getFieldDecorator('fringe', {
 						initialValue: fringe,
-						rules: [{ required: true, message: 'Provide Fringe Bank!' }]
+						rules: [{ required: true, message: 'Provide Fringe Bank Issued Amount!' }]
 					})(
 						<InputNumber
 							style={{ minWidth: '200px' }}
@@ -131,14 +131,14 @@ export class Bank extends Component {
 					)}
 				</Form.Item>
 				<Form.Item
-					label="Consultant Bank"
+					label="Consultant Bank Issued Amount"
 					validateStatus={consultantError ? 'error' : ''}
 					help={consultantError || ''}
 					{...formItemLayout}
 				>
 					{getFieldDecorator('consultant', {
 						initialValue: consultant,
-						rules: [{ required: true, message: 'Provide Consultant Bank!' }]
+						rules: [{ required: true, message: 'Provide Consultant Bank Issued Amount!' }]
 					})(
 						<InputNumber
 							style={{ minWidth: '200px' }}
@@ -149,14 +149,14 @@ export class Bank extends Component {
 					)}
 				</Form.Item>
 				<Form.Item
-					label="Supplies Bank"
+					label="Supplies Bank Issued Amount"
 					validateStatus={supplyError ? 'error' : ''}
 					help={supplyError || ''}
 					{...formItemLayout}
 				>
 					{getFieldDecorator('supply', {
 						initialValue: supply,
-						rules: [{ required: true, message: 'Provide Supplies Bank!' }]
+						rules: [{ required: true, message: 'Provide Supplies Bank Issued Amount!' }]
 					})(
 						<InputNumber
 							style={{ minWidth: '200px' }}
@@ -167,14 +167,14 @@ export class Bank extends Component {
 					)}
 				</Form.Item>
 				<Form.Item
-					label="Travel Bank"
+					label="Travel Bank Issued Amount"
 					validateStatus={travelError ? 'error' : ''}
 					help={travelError || ''}
 					{...formItemLayout}
 				>
 					{getFieldDecorator('travel', {
 						initialValue: travel,
-						rules: [{ required: true, message: 'Provide Travel Bank!' }]
+						rules: [{ required: true, message: 'Provide Travel Bank Issued Amount!' }]
 					})(
 						<InputNumber
 							style={{ minWidth: '200px' }}
@@ -185,14 +185,14 @@ export class Bank extends Component {
 					)}
 				</Form.Item>
 				<Form.Item
-					label="Others Bank"
+					label="Others Bank Issued Amount"
 					validateStatus={otherError ? 'error' : ''}
 					help={otherError || ''}
 					{...formItemLayout}
 				>
 					{getFieldDecorator('other', {
 						initialValue: other,
-						rules: [{ required: true, message: 'Provide Others Bank!' }]
+						rules: [{ required: true, message: 'Provide Others Bank Issued Amount!' }]
 					})(
 						<InputNumber
 							style={{ minWidth: '200px' }}

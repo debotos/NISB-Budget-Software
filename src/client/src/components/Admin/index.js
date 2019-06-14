@@ -3,6 +3,7 @@ import { Layout, Typography } from 'antd'
 
 import Budget from './Budget'
 import Bank from './Bank'
+import Reset from './Reset'
 
 const { Content } = Layout
 const { Title } = Typography
@@ -31,6 +32,20 @@ export class Admin extends Component {
 								Bank Issued
 							</Title>
 							<Bank budgetYear={budgetYear} />
+						</div>
+					</Content>
+				</Layout>
+				<Layout style={{ padding: '24px 0', margin: '50px 0', background: '#fff' }}>
+					<Content
+						style={{
+							minHeight: '500px',
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}
+					>
+						<div>
+							<Reset />
 						</div>
 					</Content>
 				</Layout>
