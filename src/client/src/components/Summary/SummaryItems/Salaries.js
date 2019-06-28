@@ -96,6 +96,10 @@ export class Salaries extends Component {
 			endDate = value[1].valueOf()
 			data = data.filter(x => x.date >= startDate && x.date <= endDate)
 		}
+		data = data.map(x => ({
+			...x,
+			total: (x.amount ? x.amount : 0) + (x.it ? x.it : 0) + (x.vat ? x.vat : 0)
+		}))
 
 		if (loading) return <Spin size="large" />
 		return (
@@ -198,6 +202,7 @@ class Cell extends React.Component {
 			case 'amount':
 			case 'it':
 			case 'vat':
+			case 'total':
 				return `${numeral(record[field]).format('0,0.00')} ৳`
 			case 'type':
 				return <span style={{ textTransform: 'capitalize' }}>{record[field]}</span>
@@ -273,6 +278,14 @@ class TableView extends React.Component {
 				editable: true,
 				// defaultSortOrder: 'descend',
 				sorter: (a, b) => a.vat - b.vat
+			},
+			{
+				title: 'Total',
+				dataIndex: 'total',
+				width: '10%',
+				editable: true,
+				// defaultSortOrder: 'descend',
+				sorter: (a, b) => a.total - b.total
 			},
 			{
 				title: 'Type',
