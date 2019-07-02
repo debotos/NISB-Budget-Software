@@ -89,7 +89,6 @@ export class Equipment extends Component {
 		const { loading, budget, showDetails, value, bank } = this.state
 		let { data } = this.state
 		let totalMoney = 0
-		data.forEach(x => (totalMoney = totalMoney + x.amount))
 		let startDate
 		let endDate
 		if (value.length === 2) {
@@ -101,8 +100,9 @@ export class Equipment extends Component {
 			...x,
 			total: (x.amount ? x.amount : 0) + (x.it ? x.it : 0) + (x.vat ? x.vat : 0)
 		}))
-
+		data.forEach(x => (totalMoney = totalMoney + x.total))
 		if (loading) return <Spin size="large" />
+
 		return (
 			<>
 				<Card title="Equipment Budget Overview">
@@ -148,7 +148,7 @@ export class Equipment extends Component {
 											'Amount',
 											'IT',
 											'VAT',
-											'Total',
+											'Total'
 										])
 									}
 								/>
