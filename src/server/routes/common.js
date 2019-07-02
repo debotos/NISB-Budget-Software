@@ -30,13 +30,11 @@ router.get('/summary', auth, async (req, res) => {
 
 		const bankQuery = await Bank.find(req.query)
 		let bankData = bankQuery[0] || defaultData
-		bankData = bankData._doc
 		let bankTotal = 0
 		Object.keys(defaultData).forEach(x => (bankTotal = bankTotal + (bankData[x] ? bankData[x] : 0)))
 
 		const budgetQuery = await Budget.find(req.query)
 		let budgetData = budgetQuery[0] || defaultData
-		budgetData = budgetData._doc
 		let budgetTotal = 0
 		Object.keys(defaultData).forEach(
 			x => (budgetTotal = budgetTotal + (budgetData[x] ? budgetData[x] : 0))
