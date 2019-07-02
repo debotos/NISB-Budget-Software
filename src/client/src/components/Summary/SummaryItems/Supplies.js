@@ -91,18 +91,18 @@ export class Supplies extends Component {
 		let totalMoney = 0
 		let startDate
 		let endDate
-		if (value.length === 2) {
-			startDate = value[0].valueOf()
-			endDate = value[1].valueOf()
-			data = data.filter(x => x.date >= startDate && x.date <= endDate)
-		}
 		data = data.map(x => ({
 			...x,
 			total: (x.amount ? x.amount : 0) + (x.it ? x.it : 0) + (x.vat ? x.vat : 0)
 		}))
 		data.forEach(x => (totalMoney = totalMoney + x.total))
-		if (loading) return <Spin size="large" />
+		if (value.length === 2) {
+			startDate = value[0].valueOf()
+			endDate = value[1].valueOf()
+			data = data.filter(x => x.date >= startDate && x.date <= endDate)
+		}
 
+		if (loading) return <Spin size="large" />
 		return (
 			<>
 				<Card title="Supplies Budget Overview">
