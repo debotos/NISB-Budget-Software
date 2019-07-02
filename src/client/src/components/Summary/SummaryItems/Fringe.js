@@ -93,6 +93,8 @@ export class Fringes extends Component {
 		let endDate
 		data = data.map(x => ({
 			...x,
+			it: x.it ? x.it : 0,
+			vat: x.vat ? x.vat : 0,
 			total: (x.amount ? x.amount : 0) + (x.it ? x.it : 0) + (x.vat ? x.vat : 0)
 		}))
 		data.forEach(x => (totalMoney = totalMoney + x.total))
@@ -101,7 +103,7 @@ export class Fringes extends Component {
 			endDate = value[1].valueOf()
 			data = data.filter(x => x.date >= startDate && x.date <= endDate)
 		}
-		
+
 		if (loading) return <Spin size="large" />
 
 		return (
